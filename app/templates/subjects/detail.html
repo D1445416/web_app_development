@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ subject.name }} - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="d-flex align-center justify-between mb-4">
+    <div class="d-flex align-center gap-2">
+        <a href="{{ url_for('main.index') }}" class="btn btn-icon btn-secondary">
+            <i class='bx bx-arrow-back'></i>
+        </a>
+        <h2>{{ subject.name }}</h2>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('summary.subject_summary', subject_id=subject.id) }}" class="btn btn-secondary">
+            <i class='bx bx-book-content'></i> 統整摘要
+        </a>
+        <a href="{{ url_for('notes.create_note', subject_id=subject.id) }}" class="btn btn-primary">
+            <i class='bx bx-plus-circle'></i> 新增筆記
+        </a>
+    </div>
+</div>
+
+{% if subject.notes %}
+    <div class="card-grid">
+        {% for note in subject.notes|sort(attribute='updated_at', reverse=True) %}
+            <a href="{{ url_for('notes.view_note', note_id=note.id) }}" style="display: contents;">
+                <div class="card" style="cursor: pointer;">
+                    <h3 class="card-title">{{ note.title }}</h3>
+                    <div class="card-body">
+                        <!-- Strip HTML tags to show preview -->
+                        <div style="font-size: 0.9rem; max-height: 4.5em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+                            {{ note.content | striptags | default('尚未加入內容', true) }}
+                        </div>
+                    </div>
+                    
+                    {% if note.tags %}
+                    <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        {% for tag in note.tags %}
+                            <span class="badge" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-footer">
+                        <small style="color: var(--text-muted);"><i class='bx bx-edit-alt'></i> {{ note.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="glass-panel text-center mt-4">
+        <div style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <i class='bx bx-edit'></i>
+        </div>
+        <h3 style="margin-bottom: 1rem;">這科還沒有任何筆記！</h3>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">準備好記錄重點了嗎？點擊按鈕新增你的第一篇筆記。</p>
+        <a href="{{ url_for('notes.create_note', subject_id=subject.id) }}" class="btn btn-primary">
+            新增筆記
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

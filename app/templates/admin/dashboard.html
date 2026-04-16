@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}系統後台 - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class='bx bxs-dashboard'></i> 系統管理中心</h2>
+    <div style="color: var(--text-muted);">掌控全站筆記內容與共用連結的生命週期。</div>
+</div>
+
+<div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <!-- Notes Stats -->
+    <div class="glass-panel text-center" style="padding: 3rem 2rem;">
+        <div style="font-size: 4rem; color: var(--primary-color); margin-bottom: 0.5rem;">
+            {{ note_count }}
+        </div>
+        <div style="font-size: 1.1rem; color: var(--text-muted); font-weight: 500;">累計筆記總數</div>
+        
+        <a href="{{ url_for('admin.manage_notes') }}" class="btn btn-primary mt-4">
+            <i class='bx bx-list-ul'></i> 管理筆記庫
+        </a>
+    </div>
+
+    <!-- Active Shares -->
+    <div class="glass-panel text-center" style="padding: 3rem 2rem;">
+        <div style="font-size: 4rem; color: var(--secondary-color); margin-bottom: 0.5rem;">
+            {{ link_count }}
+        </div>
+        <div style="font-size: 1.1rem; color: var(--text-muted); font-weight: 500;">啟用中的共用連結</div>
+        
+        <a href="{{ url_for('admin.manage_links') }}" class="btn btn-primary mt-4" style="background: var(--secondary-color); box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3);">
+            <i class='bx bx-link'></i> 管理分享連結
+        </a>
+    </div>
+</div>
+{% endblock %}

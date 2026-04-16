@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}管理筆記庫 - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="mb-4 d-flex align-center gap-2">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-icon btn-secondary">
+        <i class='bx bx-arrow-back'></i>
+    </a>
+    <h2><i class='bx bx-list-ul'></i> 全站筆記管理</h2>
+</div>
+
+<div class="glass-panel" style="background: white; padding: 2rem;">
+    {% if notes %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e2e8f0; color: var(--text-muted);">
+                        <th style="padding: 1rem;">ID</th>
+                        <th style="padding: 1rem;">所屬科目</th>
+                        <th style="padding: 1rem;">標題</th>
+                        <th style="padding: 1rem;">建立時間</th>
+                        <th style="padding: 1rem; text-align: right;">危險操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for note in notes %}
+                        <tr style="border-bottom: 1px solid #f1f5f9; transition: var(--transition);" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                            <td style="padding: 1rem;">#{{ note.id }}</td>
+                            <td style="padding: 1rem;">
+                                <span class="badge" style="background: var(--text-muted);">{{ note.subject.name }}</span>
+                            </td>
+                            <td style="padding: 1rem; font-weight: 500;">
+                                <a href="{{ url_for('notes.view_note', note_id=note.id) }}" target="_blank">{{ note.title }}</a>
+                            </td>
+                            <td style="padding: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                                {{ note.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </td>
+                            <td style="padding: 1rem; text-align: right;">
+                                <form action="{{ url_for('admin.force_delete_note', note_id=note.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('警告：這將強制且永久清除該筆記，確定執行？');">
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class='bx bx-trash'></i> 強制刪除</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">目前系統中沒有任何筆記。</p>
+    {% endif %}
+</div>
+{% endblock %}

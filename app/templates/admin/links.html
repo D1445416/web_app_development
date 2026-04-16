@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}共用連結監控 - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="mb-4 d-flex align-center gap-2">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-icon btn-secondary">
+        <i class='bx bx-arrow-back'></i>
+    </a>
+    <h2><i class='bx bx-link'></i> 全站共用連結監控</h2>
+</div>
+
+<div class="glass-panel" style="background: white; padding: 2rem;">
+    {% if links %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e2e8f0; color: var(--text-muted);">
+                        <th style="padding: 1rem;">對應筆記</th>
+                        <th style="padding: 1rem;">Token ID</th>
+                        <th style="padding: 1rem;">權限狀態</th>
+                        <th style="padding: 1rem;">創建於</th>
+                        <th style="padding: 1rem; text-align: right;">管理操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for link in links %}
+                        <tr style="border-bottom: 1px solid #f1f5f9; transition: var(--transition);" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                            <td style="padding: 1rem; font-weight: 500;">
+                                <a href="{{ url_for('notes.view_note', note_id=link.note_id) }}" target="_blank">{{ link.note.title if link.note else '筆記已遺失' }}</a>
+                            </td>
+                            <td style="padding: 1rem; font-family: monospace; font-size: 0.9rem; color: var(--primary-color);">
+                                {{ link.token[:12] }}...
+                                <a href="{{ url_for('share.access_share_link', token=link.token) }}" target="_blank" title="開啟連結"><i class='bx bx-external-link'></i></a>
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if link.permission == 'edit' %}
+                                    <span class="badge" style="background: var(--danger);">可編輯</span>
+                                {% else %}
+                                    <span class="badge" style="background: var(--success);">唯讀</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                                {{ link.created_at.strftime('%Y-%m-%d') }}
+                            </td>
+                            <td style="padding: 1rem; text-align: right;">
+                                <form action="{{ url_for('admin.revoke_link', link_id=link.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('確定要撤銷此連結嗎？外部人員將無法再存取。');">
+                                    <button type="submit" class="btn btn-secondary btn-sm"><i class='bx bx-unlink'></i> 撤銷失效</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">目前沒有對外開放任何分享連結。</p>
+    {% endif %}
+</div>
+{% endblock %}

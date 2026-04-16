@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}搜尋: {{ q }} - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <div class="d-flex align-center gap-2">
+        <a href="{{ url_for('main.index') }}" class="btn btn-icon btn-secondary">
+            <i class='bx bx-arrow-back'></i>
+        </a>
+        <h2><i class='bx bx-search'></i> 搜尋結果</h2>
+    </div>
+    <div style="font-size: 1.1rem; color: var(--text-muted); margin-top: 1rem;">
+        您搜尋的關鍵字：「<span style="color: var(--primary-color); font-weight: bold;">{{ q }}</span>」
+    </div>
+</div>
+
+{% if notes %}
+    <div style="margin-bottom: 2rem;">
+        <span class="badge" style="background: var(--success);">找到 {{ notes|length }} 篇相關的筆記</span>
+    </div>
+    <div class="card-grid">
+        {% for note in notes %}
+            <a href="{{ url_for('notes.view_note', note_id=note.id) }}" style="display: contents;">
+                <div class="card" style="cursor: pointer;">
+                    <div style="color: var(--primary-color); font-size: 0.8rem; font-weight: bold; margin-bottom: 0.5rem;">
+                        <i class='bx bx-folder'></i> {{ note.subject.name }}
+                    </div>
+                    <h3 class="card-title">{{ note.title }}</h3>
+                    <div class="card-body">
+                        <div style="font-size: 0.9rem; max-height: 4.5em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+                            <!-- TODO: 關鍵字高亮可以在前端透過 JS 處理，此處做 MVP 文字呈現 -->
+                            <span class="search-snippet">{{ note.content | striptags }}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <small style="color: var(--text-muted);"><i class='bx bx-edit-alt'></i> {{ note.updated_at.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="glass-panel text-center mt-4" style="padding: 4rem 2rem;">
+        <div style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <i class='bx bx-question-mark'></i>
+        </div>
+        <h3 style="margin-bottom: 1rem;">找不到任何符合的筆記</h3>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">試試看更換其他關鍵字，或是縮短字詞來搜尋看看吧！</p>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const keyword = "{{ q | safe }}";
+    if (keyword) {
+        const regex = new RegExp(`(${keyword})`, 'gi');
+        document.querySelectorAll('.search-snippet').forEach(el => {
+            el.innerHTML = el.innerText.replace(regex, '<mark style="background: #fde047; padding: 0 0.15rem; border-radius: 4px;">$1</mark>');
+        });
+    }
+});
+</script>
+{% endblock %}

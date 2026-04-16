@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}建立新科目 - MemoSpace{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="d-flex align-center gap-2 mb-4">
+        <a href="{{ url_for('main.index') }}" class="btn btn-icon btn-secondary">
+            <i class='bx bx-arrow-back'></i>
+        </a>
+        <h2>建立新科目</h2>
+    </div>
+
+    <div class="glass-panel">
+        <form action="{{ url_for('subjects.create_subject') }}" method="POST">
+            <div class="form-group">
+                <label for="name" class="form-label">科目名稱</label>
+                <input type="text" id="name" name="name" class="form-control" placeholder="例如：數學、高中物理、Python 程式設計" required autofocus>
+            </div>
+            
+            <div class="form-group mb-4" style="color: var(--text-muted); font-size: 0.9rem;">
+                <i class='bx bx-info-circle'></i> 提示：建立科目後，你可以在裡面存放相關的所有筆記。
+            </div>
+
+            <div class="d-flex justify-between mt-4">
+                <a href="{{ url_for('main.index') }}" class="btn btn-secondary">取消</a>
+                <button type="submit" class="btn btn-primary"><i class='bx bx-check'></i> 建立</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

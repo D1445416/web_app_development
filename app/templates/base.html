@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}讀書筆記本系統{% endblock %}</title>
+    <meta name="description" content="集中化、結構化的高效讀書筆記管理系統">
+    
+    <!-- Boxicons for modern icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Vanilla CSS System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="{{ url_for('main.index') }}">
+                    <i class='bx bxs-book-heart'></i>
+                    MemoSpace
+                </a>
+            </div>
+            
+            <form action="{{ url_for('main.search') }}" method="GET" class="d-flex align-center gap-2" style="position:relative;">
+                <i class='bx bx-search' style="position:absolute; left:12px; color:var(--text-muted)"></i>
+                <input type="text" name="q" placeholder="全文搜尋筆記..." class="form-control" style="padding-left: 36px; border-radius: var(--radius-full); width: 250px;">
+            </form>
+
+            <div class="nav-links">
+                <a href="{{ url_for('main.index') }}"><i class='bx bx-home-alt'></i> 首頁</a>
+                <a href="{{ url_for('tags.tag_list') }}"><i class='bx bx-tag'></i> 標籤</a>
+                {% if session.get('is_admin') %}
+                    <a href="{{ url_for('admin.dashboard') }}"><i class='bx bxs-dashboard'></i> 後台</a>
+                    <form action="{{ url_for('admin.admin_logout') }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-secondary btn-sm"><i class='bx bx-log-out'></i> 登出</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('admin.admin_login') }}"><i class='bx bx-lock-alt'></i> 管理者</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content animate-fade-in">
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <span>{{ message }}</span>
+                            <i class='bx bx-x' style="cursor:pointer;" onclick="this.parentElement.style.display='none'"></i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}
+    <script>
+        // Interactive generic script
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("MemorySpace Initialized");
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

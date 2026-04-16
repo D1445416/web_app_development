@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ subject.name }} - 統整摘要{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <div class="d-flex align-center gap-2">
+        <a href="{{ url_for('subjects.subject_detail', subject_id=subject.id) }}" class="btn btn-icon btn-secondary">
+            <i class='bx bx-arrow-back'></i>
+        </a>
+        <h2>📚 {{ subject.name }} - 統整摘要視圖</h2>
+    </div>
+    <div class="mt-4" style="color: var(--text-muted);">
+        <i class='bx bx-bulb'></i> 這是一個將 {{ subject.name }} 內所有筆記串聯在一起的便攜複習視圖。你可以直接列印此頁來作為考前重點複習。
+    </div>
+</div>
+
+<div class="glass-panel" style="background: white; padding: 2rem; max-width: 900px; margin: 0 auto;">
+    {% if subject.notes %}
+        {% for note in subject.notes|sort(attribute='created_at') %}
+            <div style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px dashed #e2e8f0;">
+                <h2 style="font-size: 1.8rem; color: var(--primary-hover); margin-bottom: 1.5rem;">
+                    {{ loop.index }}. {{ note.title }}
+                </h2>
+                
+                {% if note.tags %}
+                <div style="margin-bottom: 1rem;">
+                    {% for tag in note.tags %}
+                        <span class="badge" style="background-color: {{ tag.color }}; border: 1px solid rgba(0,0,0,0.1); color: white; margin-right: 0.5rem; display: inline-block;">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div style="font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.8;">
+                    {{ note.content | safe }}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="text-center mt-4">
+            <button onclick="window.print()" class="btn btn-primary"><i class='bx bx-printer'></i> 列印整份筆記</button>
+        </div>
+    {% else %}
+        <div class="text-center">本科目目前還沒有筆記，無從摘要。</div>
+    {% endif %}
+</div>
+{% endblock %}

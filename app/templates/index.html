@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}首頁 - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-between align-center mb-4">
+    <h2><i class='bx bx-book-open'></i> 我的學習科目</h2>
+    <a href="{{ url_for('subjects.create_subject') }}" class="btn btn-primary">
+        <i class='bx bx-plus-circle'></i> 新增科目
+    </a>
+</div>
+
+{% if subjects %}
+    <div class="card-grid">
+        {% for subject in subjects %}
+            <a href="{{ url_for('subjects.subject_detail', subject_id=subject.id) }}" style="display: contents;">
+                <div class="card" style="cursor: pointer;">
+                    <div class="d-flex justify-between align-center card-title">
+                        <span style="font-weight: 600; color: var(--text-main);">{{ subject.name }}</span>
+                        <div style="background: rgba(99, 102, 241, 0.1); color: var(--primary-color); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-size: 0.8rem;">
+                            <i class='bx bx-book'></i> {{ subject.notes|length }} 篇筆記
+                        </div>
+                    </div>
+                    <div class="card-body mt-4">
+                        <p style="font-size: 0.9rem;">
+                            進入此科目以查看詳細的筆記清單與統整摘要。
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <small style="color: var(--text-muted);"><i class='bx bx-time-five'></i> 建立於 {{ subject.created_at.strftime('%Y-%m-%d') }}</small>
+                        <form action="{{ url_for('subjects.delete_subject', subject_id=subject.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('確定要刪除這個科目嗎？其內的所有筆記都會被一併移除！');">
+                            <button type="submit" class="btn btn-icon btn-danger" style="background:transparent; color:var(--text-muted);" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'">
+                                <i class='bx bx-trash'></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="glass-panel text-center mt-4">
+        <div style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <i class='bx bx-folder-plus'></i>
+        </div>
+        <h3 style="margin-bottom: 1rem;">目前還沒有任何科目</h3>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">點擊右上方按鈕開始建立你的第一個學習科目吧！</p>
+        <a href="{{ url_for('subjects.create_subject') }}" class="btn btn-primary">
+            建立新科目
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

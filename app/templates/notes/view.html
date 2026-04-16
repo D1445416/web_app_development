@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ note.title }} - MemoSpace{% endblock %}
+
+{% block head %}
+<!-- quill core style definition if any defaults are needed to display raw content properly -->
+<style>
+    .note-content-container {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+    .note-content-container p { margin-bottom: 1em; }
+    .note-content-container h1, .note-content-container h2, .note-content-container h3 { margin-top: 1.5em; margin-bottom: 0.5em; }
+    .note-content-container ul, .note-content-container ol { padding-left: 1.5rem; margin-bottom: 1em; }
+    .note-content-container pre { background: #f1f5f9; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1em;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex align-center justify-between mb-2">
+    <div class="d-flex align-center gap-2">
+        <a href="{{ url_for('subjects.subject_detail', subject_id=note.subject_id) }}" class="btn btn-icon btn-secondary" title="回到 {{ note.subject.name }}">
+            <i class='bx bx-arrow-back'></i>
+        </a>
+        <div style="color: var(--text-muted); font-size: 0.9rem;">
+            {{ note.subject.name }} / 閱讀筆記
+        </div>
+    </div>
+    
+    <!-- Actions -->
+    <div class="d-flex gap-2">
+        <form action="{{ url_for('share.generate_share_link', note_id=note.id) }}" method="POST" style="display:inline;">
+            <select name="permission" style="border: 1px solid #ccc; padding: 0.4rem; border-radius: var(--radius-md);">
+                <option value="read">唯讀協作</option>
+                <option value="edit">編輯協作</option>
+            </select>
+            <button type="submit" class="btn btn-secondary btn-sm" title="產生共用連結"><i class='bx bx-link-alt'></i> 分享</button>
+        </form>
+        
+        <a href="{{ url_for('export.export_pdf', note_id=note.id) }}" class="btn btn-secondary btn-sm" title="匯出 (預先列印)"><i class='bx bx-printer'></i> PDF</a>
+        <a href="{{ url_for('export.export_md', note_id=note.id) }}" class="btn btn-secondary btn-sm" title="下載 MD"><i class='bx bx-download'></i> MD</a>
+        
+        <a href="{{ url_for('notes.edit_note', note_id=note.id) }}" class="btn btn-primary"><i class='bx bx-edit-alt'></i> 編輯</a>
+        <form action="{{ url_for('notes.delete_note', note_id=note.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('確定要刪除這篇筆記嗎？');">
+            <button type="submit" class="btn btn-danger btn-sm"><i class='bx bx-trash'></i> 刪除</button>
+        </form>
+    </div>
+</div>
+
+<!-- 分享連結列表提示 -->
+{% if note.share_links %}
+<div class="glass-panel mb-4" style="padding: 1rem; background: rgba(255, 255, 255, 0.9);">
+    <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);"><i class='bx bx-share-alt'></i> 管理共用連結</h4>
+    {% for link in note.share_links %}
+        <div class="d-flex justify-between align-center" style="font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; padding: 0.3rem 0;">
+            <div>
+                <strong>權限:</strong> 
+                {% if link.permission == 'edit' %}<span style="color:var(--danger)">可編輯</span>{% else %}<span style="color:var(--success)">唯讀</span>{% endif %}
+                <a href="{{ url_for('share.access_share_link', token=link.token) }}" target="_blank" style="margin-left: 10px; color: var(--primary-color);">複製網址 (開啟體驗)</a>
+            </div>
+            <div style="color: var(--text-muted);">
+                Token: {{ link.token[:8] }}...
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="glass-panel" style="background: white; padding: 3rem;">
+    <!-- 標籤區間 -->
+    <div class="d-flex justify-between align-center mb-4 border-bottom" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 0;">{{ note.title }}</h1>
+    </div>
+    
+    <div class="d-flex align-center gap-2 mb-4 flex-wrap">
+        {% for tag in note.tags %}
+            <span class="badge" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+        {% endfor %}
+        
+        <!-- Add tag form -->
+        {% if all_tags %}
+        <form action="{{ url_for('notes.add_note_tag', note_id=note.id) }}" method="POST" class="d-flex align-center" style="gap: 5px; margin-left: auto;">
+            <select name="tag_id" style="padding: 0.2rem 0.5rem; border: 1px dashed var(--primary-color); border-radius: var(--radius-md); font-size: 0.8rem;">
+                <option value="">選擇加入新標籤...</option>
+                {% for t in all_tags %}
+                    {% if t not in note.tags %}
+                        <option value="{{ t.id }}">{{ t.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem;"><i class='bx bx-plus'></i></button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- 內文顯示區 -->
+    <div class="note-content-container">
+        {% if note.content %}
+            {{ note.content | safe }}
+        {% else %}
+            <p style="color: var(--text-muted); font-style: italic;">這裡空空如也，沒有筆記內容。</p>
+        {% endif %}
+    </div>
+    
+    <div class="mt-4 pt-4" style="border-top: 1px dashed #e2e8f0; color: var(--text-muted); font-size: 0.85rem; text-align: right;">
+        最後更新於: {{ note.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}
+    </div>
+</div>
+{% endblock %}

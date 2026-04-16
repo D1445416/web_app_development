@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}管理員登入 - MemoSpace{% endblock %}
+
+{% block content %}
+<div style="max-width: 450px; margin: 4rem auto 0 auto;">
+    <div class="glass-panel text-center" style="padding: 3rem 2rem;">
+        <div style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;">
+            <i class='bx bx-shield-quarter'></i>
+        </div>
+        <h2 style="margin-bottom: 2rem;">系統管理員登入</h2>
+        
+        <form action="{{ url_for('admin.admin_login') }}" method="POST">
+            <div class="form-group text-left" style="text-align: left;">
+                <label for="username" class="form-label">管理員帳號</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="請輸入帳號" required autofocus>
+            </div>
+            
+            <div class="form-group mt-4" style="text-align: left;">
+                <label for="password" class="form-label">密碼</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="請輸入密碼" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 0.8rem;">
+                安全登入 <i class='bx bx-right-arrow-alt'></i>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}標籤管理 - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class='bx bx-purchase-tag-alt'></i> 系統標籤管理</h2>
+    <div style="color: var(--text-muted);">新增或檢視所有標籤分類。點擊標籤可以過濾出擁有該標籤的筆記。</div>
+</div>
+
+<div class="glass-panel mb-4">
+    <h3 style="margin-bottom: 1rem;">新增自訂標籤</h3>
+    <form action="{{ url_for('tags.create_tag') }}" method="POST" class="d-flex align-center gap-2">
+        <div class="form-group mb-0" style="flex:1;">
+            <input type="text" name="name" class="form-control" placeholder="輸入標籤名稱..." required>
+        </div>
+        <div class="form-group mb-0">
+            <input type="color" name="color" class="form-control" value="#6366f1" style="width: 50px; padding: 0.2rem; cursor: pointer;">
+        </div>
+        <button type="submit" class="btn btn-primary"><i class='bx bx-plus'></i> 新增</button>
+    </form>
+</div>
+
+<div class="glass-panel" style="background: white;">
+    <h3 style="margin-bottom: 1.5rem;">現有標籤</h3>
+    {% if tags %}
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            {% for tag in tags %}
+                <a href="{{ url_for('tags.notes_by_tag', tag_id=tag.id) }}" style="text-decoration: none;">
+                    <div style="padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid #e2e8f0; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);" onmouseover="this.style.borderColor='{{ tag.color }}'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                        <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: {{ tag.color }};"></span>
+                        <span style="font-weight: 500; color: var(--text-main);">{{ tag.name }}</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); background: #f1f5f9; padding: 0.1rem 0.5rem; border-radius: 20px;">
+                            {{ tag.notes|length }}
+                        </span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted text-center" style="padding: 2rem 0;">目前尚未定義任何標籤。</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}唯讀分享 - {{ note.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-4 d-flex justify-between align-center">
+    <div>
+        <h2>🔗 [唯讀分享] {{ note.title }}</h2>
+        <div style="color: var(--text-muted); font-size: 0.9rem;">來自科目: {{ note.subject.name }}</div>
+    </div>
+    <div>
+        <span class="badge" style="background: var(--success); font-size: 0.9rem;">閱讀員模式</span>
+    </div>
+</div>
+
+<div class="glass-panel" style="background: white; padding: 3rem;">
+    <!-- 內文顯示區 -->
+    <div style="font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.8;">
+        {% if note.content %}
+            {{ note.content | safe }}
+        {% else %}
+            <p style="color: var(--text-muted); font-style: italic;">沒有筆記內容。</p>
+        {% endif %}
+    </div>
+    
+    <div class="mt-4 pt-4" style="border-top: 1px dashed #e2e8f0; color: var(--text-muted); font-size: 0.85rem; text-align: right;">
+        本篇筆記最後更新於: {{ note.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}
+    </div>
+</div>
+
+<div class="text-center mt-4" style="color: var(--text-muted); font-size: 0.85rem;">
+    Powered by MemoSpace - 共享無極限
+</div>
+{% endblock %}
