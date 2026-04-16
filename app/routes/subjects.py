@@ -33,6 +33,17 @@ def subject_detail(subject_id):
         return redirect(url_for('main.index'))
     return render_template('subjects/detail.html', subject=subject)
 
+@bp_subjects.route('/<int:subject_id>/delete/confirm', methods=['GET'])
+def delete_subject_confirm(subject_id):
+    """
+    刪除科目確認頁面
+    """
+    subject = Subject.get_by_id(subject_id)
+    if not subject:
+        flash('找不到該科目', 'danger')
+        return redirect(url_for('main.index'))
+    return render_template('subjects/delete_confirm.html', subject=subject)
+
 @bp_subjects.route('/<int:subject_id>/delete', methods=['POST'])
 def delete_subject(subject_id):
     """
@@ -42,7 +53,7 @@ def delete_subject(subject_id):
     if subject:
         try:
             subject.delete()
-            flash('科目刪除成功', 'success')
+            flash('科目已刪除', 'success')
         except Exception as e:
             flash(f'刪除時發生錯誤: {str(e)}', 'danger')
     else:

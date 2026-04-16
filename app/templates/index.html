@@ -27,18 +27,15 @@
                 </div>
                 <div class="card-footer">
                     <small style="color: var(--text-muted);"><i class='bx bx-time-five'></i> 建立於 {{ subject.created_at.strftime('%Y-%m-%d') }}</small>
-                    <form action="{{ url_for('subjects.delete_subject', subject_id=subject.id) }}" method="POST"
-                          style="display:inline;"
-                          onclick="event.stopPropagation()">
-                        <button type="button"
-                                class="btn btn-icon"
-                                style="background:transparent; color:var(--text-muted); border:none;"
-                                onmouseover="this.style.color='var(--danger)'"
-                                onmouseout="this.style.color='var(--text-muted)'"
-                                onclick="event.stopPropagation(); if(window.confirm('確定要刪除「{{ subject.name }}」嗎？\n此科目內的所有筆記都會被一併移除，無法復原！')) this.closest('form').submit();">
-                            <i class='bx bx-trash'></i>
-                        </button>
-                    </form>
+                    <a href="{{ url_for('subjects.delete_subject_confirm', subject_id=subject.id) }}"
+                       class="btn btn-icon"
+                       style="background:transparent; color:var(--text-muted); border:none;"
+                       onmouseover="this.style.color='var(--danger)'"
+                       onmouseout="this.style.color='var(--text-muted)'"
+                       onclick="event.stopPropagation()"
+                       title="刪除此科目">
+                        <i class='bx bx-trash'></i>
+                    </a>
                 </div>
             </div>
         {% endfor %}

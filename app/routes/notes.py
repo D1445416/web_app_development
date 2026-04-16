@@ -71,6 +71,17 @@ def edit_note(note_id):
             
     return render_template('notes/edit.html', note=note)
 
+@bp_notes.route('/notes/<int:note_id>/delete/confirm', methods=['GET'])
+def delete_note_confirm(note_id):
+    """
+    刪除筆記確認頁面
+    """
+    note = Note.get_by_id(note_id)
+    if not note:
+        flash('找不到筆記', 'danger')
+        return redirect(url_for('main.index'))
+    return render_template('notes/delete_confirm.html', note=note)
+
 @bp_notes.route('/notes/<int:note_id>/delete', methods=['POST'])
 def delete_note(note_id):
     """

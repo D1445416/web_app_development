@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}確認刪除科目 - MemoSpace{% endblock %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 560px; margin: 4rem auto; padding: 2.5rem; text-align: center;">
+
+    <div style="font-size: 4rem; color: var(--danger); margin-bottom: 1rem;">
+        <i class='bx bx-error-circle'></i>
+    </div>
+
+    <h2 style="margin-bottom: 0.5rem;">確認刪除科目</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+        您即將刪除科目 <strong style="color: var(--text-main);">「{{ subject.name }}」</strong>。
+    </p>
+
+    <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
+                border-radius: var(--radius-md); padding: 1rem 1.5rem; margin-bottom: 2rem; text-align: left;">
+        <p style="margin: 0; color: var(--danger); font-size: 0.9rem;">
+            <i class='bx bx-info-circle'></i>
+            <strong>注意：</strong>此科目下共有 <strong>{{ subject.notes|length }} 篇筆記</strong>
+            會被一併永久刪除，此操作無法復原。
+        </p>
+    </div>
+
+    <div class="d-flex gap-2" style="justify-content: center;">
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary" style="min-width: 120px;">
+            <i class='bx bx-x'></i> 取消
+        </a>
+        <form action="{{ url_for('subjects.delete_subject', subject_id=subject.id) }}" method="POST">
+            <button type="submit" class="btn btn-danger" style="min-width: 120px;">
+                <i class='bx bx-trash'></i> 確認刪除
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
