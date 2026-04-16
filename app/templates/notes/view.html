@@ -41,8 +41,8 @@
         <a href="{{ url_for('export.export_md', note_id=note.id) }}" class="btn btn-secondary btn-sm" title="下載 MD"><i class='bx bx-download'></i> MD</a>
         
         <a href="{{ url_for('notes.edit_note', note_id=note.id) }}" class="btn btn-primary"><i class='bx bx-edit-alt'></i> 編輯</a>
-        <form action="{{ url_for('notes.delete_note', note_id=note.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('確定要刪除這篇筆記嗎？');">
-            <button type="submit" class="btn btn-danger btn-sm"><i class='bx bx-trash'></i> 刪除</button>
+        <form id="delete-note-form" action="{{ url_for('notes.delete_note', note_id=note.id) }}" method="POST" style="display:inline;">
+            <button id="btn-delete-note" type="button" class="btn btn-danger btn-sm"><i class='bx bx-trash'></i> 刪除</button>
         </form>
     </div>
 </div>
@@ -106,4 +106,21 @@
         最後更新於: {{ note.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var btnDelete = document.getElementById('btn-delete-note');
+    var deleteForm = document.getElementById('delete-note-form');
+    if (btnDelete && deleteForm) {
+        btnDelete.addEventListener('click', function() {
+            if (window.confirm('確定要刪除這篇筆記嗎？此操作無法復原。')) {
+                deleteForm.submit();
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

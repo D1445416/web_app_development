@@ -30,7 +30,7 @@
                         <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: {{ tag.color }};"></span>
                         <span style="font-weight: 500; color: var(--text-main);">{{ tag.name }}</span>
                         <span style="font-size: 0.8rem; color: var(--text-muted); background: #f1f5f9; padding: 0.1rem 0.5rem; border-radius: 20px;">
-                            {{ tag.notes|length }}
+                            {{ tag.notes.count() }}
                         </span>
                     </div>
                 </a>
